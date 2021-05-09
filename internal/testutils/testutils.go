@@ -1,12 +1,14 @@
+// Package testutils provides utilities for tests to use.
 package testutils
 
 import (
 	"io"
 	"os"
+	"regexp"
 	"strings"
 )
 
-// captureStdout replaces os.Stdout with a writer that buffers any data written
+// CaptureStdout replaces os.Stdout with a writer that buffers any data written
 // to os.Stdout. Call the returned function to cleanup and get the data
 // as a string.
 func CaptureStdout() func() (string, error) {
@@ -34,4 +36,13 @@ func CaptureStdout() func() (string, error) {
 		err := <-done
 		return buf.String(), err
 	}
+}
+
+// RemoveWhitespace removes all whitespace from a string.
+//
+// An example use of this function is to compare two strings
+// independent of whitespaces.
+func RemoveWhitespace(str string) string {
+	pattern := regexp.MustCompile(`\s+`)
+	return pattern.ReplaceAllString(str, "")
 }

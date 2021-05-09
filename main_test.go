@@ -10,19 +10,19 @@ import (
 
 func rootHelpOutputFixture() string {
 	return `jiracli is a command-line interface to JIRA.
-	
-	Usage:
-	  jiracli [command]
-	
-	Available Commands:
-	  help        Help about any command
-	  render      Uses a golang template to render data from JIRA.
-	
-	Flags:
-		  --config string    config file (default is $HOME/.jiracli.yaml)
-	  -h, --help             help for jiracli
-	
-	Use "jiracli [command] --help" for more information about a command.
+
+Usage:
+	jiracli [command]
+
+Available Commands:
+	help        Help about any command
+	render      Uses a golang template to render the data from JIRA
+
+Flags:
+		--config string    config file (default is $HOME/.jiracli.yaml)
+	-h, --help             help for jiracli
+
+Use "jiracli [command] --help" for more information about a command.
 `
 }
 
@@ -65,7 +65,7 @@ func TestCli(t *testing.T) {
 				if err != nil {
 					t.Error(err)
 				}
-				if actual != expected {
+				if testutils.RemoveWhitespace(actual) != testutils.RemoveWhitespace(expected) {
 					t.Errorf(
 						"Test command-line\n Expected output\n %s \n\n Actual output\n %s\n",
 						expected,
