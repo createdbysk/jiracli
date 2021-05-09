@@ -42,5 +42,7 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// renderCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	renderCmd.Flags().StringP("url", "", "", "JIRA URL")
+	renderCmd.Flags().StringP("username", "", "", "JIRA username")
+	renderCmd.Flags().StringP("password", "", "", "JIRA password")
 }

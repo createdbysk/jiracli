@@ -11,18 +11,35 @@ import (
 func rootHelpOutputFixture() string {
 	return `jiracli is a command-line interface to JIRA.
 
-Usage:
-	jiracli [command]
+	Usage:
+	  jiracli [command]
+	
+	Available Commands:
+	  help        Help about any command
+	  render      Uses a golang template to render the data from JIRA
+	
+	Flags:
+		  --config string   config file (default is $HOME/.jiracli.yaml)
+	  -h, --help            help for jiracli
+	
+	Use "jiracli [command] --help" for more information about a command.
+`
+}
 
-Available Commands:
-	help        Help about any command
-	render      Uses a golang template to render the data from JIRA
-
-Flags:
-		--config string    config file (default is $HOME/.jiracli.yaml)
-	-h, --help             help for jiracli
-
-Use "jiracli [command] --help" for more information about a command.
+func renderHelpOutputFixture() string {
+	return ` Uses a golang template to render the data from JIRA.
+            
+	Usage:
+	  jiracli render [flags]
+	
+	Flags:
+	  -h, --help              help for render
+		  --password string   JIRA password
+		  --url string        JIRA URL
+		  --username string   JIRA username
+	
+	Global Flags:
+		  --config string   config file (default is $HOME/.jiracli.yaml)
 `
 }
 
@@ -38,6 +55,11 @@ func TestCli(t *testing.T) {
 			commandline: "-h",
 			output:      rootHelpOutputFixture(),
 		},
+		{
+			name:        "render help shorthand",
+			commandline: "render -h",
+			output:      renderHelpOutputFixture(),
+		},
 	}
 
 	for _, tt := range testcases {
@@ -51,7 +73,7 @@ func TestCli(t *testing.T) {
 				oldargs := os.Args
 				defer func() { os.Args = oldargs }()
 
-				os.Args = strings.Fields(commandline)
+				os.Args = append([]string{""}, strings.Fields(commandline)...)
 
 				captureStdout := testutils.CaptureStdout()
 
