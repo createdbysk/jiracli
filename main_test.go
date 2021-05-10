@@ -30,7 +30,7 @@ func renderHelpOutputFixture() string {
 	return ` Uses a golang template to render the data from JIRA.
             
 	Usage:
-	  jiracli render [flags]
+	  jiracli render [flags] <path to template file> <jql>
 	
 	Flags:
 	  -h, --help              help for render
