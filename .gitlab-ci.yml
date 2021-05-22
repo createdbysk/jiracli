@@ -69,3 +69,13 @@ coverage:
     - branches
   tags:
     - docker
+
+
+jiracli:
+  stage: deploy
+  extends: build
+  artifacts:
+    paths:
+      - bin
+  tags:
+    - docker

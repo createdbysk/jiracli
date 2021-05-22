@@ -1,4 +1,5 @@
 GO=$(shell which go)
+ARTIFACT=jiracli
 
 .PHONY: help clean test coverage coverage-html fmt fmt-check vet lint staticcheck godoc
 
@@ -69,7 +70,7 @@ build: clean
 	mkdir -p bin/
 	@echo Building with $(shell $(GO) version)
 	$(GO) get -d -v ./...
-	$(GO) build
+	$(GO) build -o bin/$(ARTIFACT)
 
 clean:
 	rm -rf bin build

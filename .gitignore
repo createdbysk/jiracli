@@ -1,4 +1,5 @@
 build/
+bin/
 
 # Binaries for programs and plugins
 jira
