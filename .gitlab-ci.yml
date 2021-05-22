@@ -20,7 +20,7 @@ stages:
   - build
   - lint
   - test
-  - deploy
+  - publish
 
 build:
   stage: build
@@ -95,7 +95,7 @@ coverage:
     - docker
 
 publish:
-  stage: deploy
+  stage: publish
   extends: build
   artifacts:
     paths:
