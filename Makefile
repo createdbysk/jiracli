@@ -1,6 +1,6 @@
 WHICH=command -v
-GO=$(shell $(WHICH) go)
-ARTIFACT=jiracli
+GO=$(shell which go)
+ARTIFACT=$(shell basename $(PWD))
 
 .PHONY: help clean test coverage coverage-html fmt fmt-check vet lint staticcheck godoc
 
@@ -79,7 +79,8 @@ build: clean
 	mkdir -p bin/
 	@echo Building with $(shell $(GO) version)
 	$(GO) get -d -v ./...
-	$(GO) build -o bin/$(ARTIFACT)
+	# Create static binaries
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GO) build -o bin/$(ARTIFACT)
 
 clean:
 	rm -rf bin build

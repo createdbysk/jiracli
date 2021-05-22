@@ -1,20 +1,4 @@
-image: centos:7
-
-.go-install:
-  before_script:
-    - yum update -y
-    - yum install -y wget make gcc
-    - if [[ ! -d /usr/local/go ]]; then
-    - wget -q https://golang.org/dl/go1.16.3.linux-amd64.tar.gz
-    - tar -zxf go1.16.3.linux-amd64.tar.gz
-    - mv go /usr/local
-    - fi
-    - export GOROOT=/usr/local/go
-    - export GOPATH=$HOME/go
-    - export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
-  cache:
-    paths:
-      - /usr/local/go
+image: golang:1.16
 
 stages:
   - build
@@ -24,7 +8,6 @@ stages:
 
 build:
   stage: build
-  extends: .go-install
   script:
     - make build
   tags:
@@ -32,7 +15,6 @@ build:
 
 fmt-check:
   stage: lint
-  extends: .go-install
   script:
     - make fmt-check
   only:
@@ -42,7 +24,6 @@ fmt-check:
 
 lint:
   stage: lint
-  extends: .go-install
   script:
     - make lint
   only:
@@ -52,7 +33,6 @@ lint:
 
 static-check:
   stage: lint
-  extends: .go-install
   script:
     - make staticcheck
   only:
@@ -62,7 +42,6 @@ static-check:
 
 vet:
   stage: lint
-  extends: .go-install
   script:
     - make vet
   only:
@@ -72,7 +51,6 @@ vet:
 
 unit-test:
   stage: test
-  extends: .go-install
   script:
     - make test
   only:
@@ -82,7 +60,6 @@ unit-test:
 
 coverage:
   stage: test
-  extends: .go-install
   coverage: /total:.*\d+\%|total:.*\d+.\d+\%/
   script:
     - make coverage-cobertura
