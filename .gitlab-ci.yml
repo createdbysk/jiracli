@@ -1,4 +1,15 @@
-image: golang:1.16
+image: ubuntu:20.04
+
+.go-install:
+  before_script:
+    - apt update
+    - apt install -y wget
+    - wget -q https://golang.org/dl/go1.16.3.linux-amd64.tar.gz
+    - tar -zxf go1.16.3.linux-amd64.tar.gz
+    - mv go /usr/local
+    - export GOROOT=/usr/local/go
+    - export GOPATH=$HOME/go
+    - export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 
 stages:
   - build
@@ -8,6 +19,7 @@ stages:
 
 build:
   stage: build
+  extends: .go-install
   script:
     - make build
   tags:
@@ -15,6 +27,7 @@ build:
 
 fmt-check:
   stage: lint
+  extends: .go-install
   script:
     - make fmt-check
   only:
@@ -24,6 +37,7 @@ fmt-check:
 
 lint:
   stage: lint
+  extends: .go-install
   script:
     - make lint
   only:
@@ -33,6 +47,7 @@ lint:
 
 static-check:
   stage: lint
+  extends: .go-install
   script:
     - make staticcheck
   only:
@@ -42,6 +57,7 @@ static-check:
 
 vet:
   stage: lint
+  extends: .go-install
   script:
     - make vet
   only:
@@ -51,6 +67,7 @@ vet:
 
 unit-test:
   stage: test
+  extends: .go-install
   script:
     - make test
   only:
@@ -60,6 +77,7 @@ unit-test:
 
 coverage:
   stage: test
+  extends: .go-install
   coverage: /total:.*\d+\%|total:.*\d+.\d+\%/
   script:
     - make coverage-cobertura
