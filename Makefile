@@ -1,5 +1,5 @@
-GO=$(shell $(WHICH) go)
 WHICH=command -v
+GO=$(shell $(WHICH) go)
 ARTIFACT=jiracli
 
 .PHONY: help clean test coverage coverage-html fmt fmt-check vet lint staticcheck godoc
