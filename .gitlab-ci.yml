@@ -8,10 +8,10 @@ stages:
 
 .go-install:
   before_script:
-    - sudo apt install wget
+    - apt install wget
     - wget -q https://golang.org/dl/go1.16.3.linux-amd64.tar.gz
-    - sudo tar -zxf go1.16.3.linux-amd64.tar.gz
-    - sudo mv go /usr/local
+    - tar -zxf go1.16.3.linux-amd64.tar.gz
+    - mv go /usr/local
     - export GOROOT=/usr/local/go
     - export GOPATH=$HOME/go
     - export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
