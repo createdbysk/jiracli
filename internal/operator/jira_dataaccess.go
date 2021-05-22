@@ -11,6 +11,7 @@ type connection struct {
 	options    *jira.SearchOptions
 }
 
+// NewJiraConnection is the factory for Connection to jira.
 func NewJiraConnection(client *http.Client, url string, maxResults int) Connection {
 	options := jira.SearchOptions{
 		MaxResults: maxResults,
@@ -24,6 +25,7 @@ type query struct {
 	jql string
 }
 
+// NewJiraQuery is the factory for jira Query instances.
 func NewJiraQuery(jql string) Query {
 	return &query{jql}
 }

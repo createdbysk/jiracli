@@ -10,5 +10,6 @@ repos:
       args: [-over=15]
     - id: validate-toml
     - id: go-unit-tests
+      args: [./...]
     - id: go-build
     - id: go-mod-tidy
