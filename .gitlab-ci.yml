@@ -1,9 +1,9 @@
-image: ubuntu:20.04
+image: centos:7
 
 .go-install:
   before_script:
-    - apt update
-    - apt install -y wget
+    - yum update
+    - yum install -y wget
     - wget -q https://golang.org/dl/go1.16.3.linux-amd64.tar.gz
     - tar -zxf go1.16.3.linux-amd64.tar.gz
     - mv go /usr/local
