@@ -8,7 +8,6 @@ stages:
 
 build:
   stage: build
-  extends: .go-install
   script:
     - make build
   only:
