@@ -71,12 +71,11 @@ coverage:
   tags:
     - docker
 
-
-jiracli:
+publish:
   stage: deploy
   extends: build
   artifacts:
     paths:
-      - bin 
+      - bin/jiracli
   tags:
     - docker
