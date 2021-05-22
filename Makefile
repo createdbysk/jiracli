@@ -72,7 +72,6 @@ staticcheck:
 	rm -rf build/staticcheck
 
 # Building targets
-
 build: clean
 	mkdir -p bin/
 	@echo Building with $(shell $(GO) version)
@@ -81,3 +80,8 @@ build: clean
 
 clean:
 	rm -rf bin build
+
+# Go Source-Code Documentation
+godoc:
+	$(WHICH) godoc || { $(GO) get -v golang.org/x/tools/cmd/godoc && $(GO) mod tidy; }
+	$(shell $(WHICH) godoc) -http=:58080 -index
