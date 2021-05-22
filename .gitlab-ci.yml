@@ -1,0 +1,88 @@
+image: ubuntu:20.04
+
+stages:
+  - build
+  - lint
+  - test
+  - deploy
+
+.go-install:
+  before_script:
+    - sudo apt install wget
+    - wget -q https://golang.org/dl/go1.16.3.linux-amd64.tar.gz
+    - sudo tar -zxf go1.16.3.linux-amd64.tar.gz
+    - sudo mv go /usr/local
+    - export GOROOT=/usr/local/go
+    - export GOPATH=$HOME/go
+    - export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+
+build:
+  stage: build
+  extends: .go-install
+  script:
+    - make build
+  only:
+    - branches
+  tags:
+    - docker
+
+fmt-check:
+  stage: lint
+  extends: .go-install
+  script:
+    - make fmt-check
+  only:
+    - branches
+  tags:
+    - docker
+
+lint:
+  stage: lint
+  extends: .go-install
+  script:
+    - make lint
+  only:
+    - branches
+  tags:
+    - docker
+
+static-check:
+  stage: lint
+  extends: .go-install
+  script:
+    - make staticcheck
+  only:
+    - branches
+  tags:
+    - docker
+
+vet:
+  stage: lint
+  extends: .go-install
+  script:
+    - make vet
+  only:
+    - branches
+  tags:
+    - docker
+
+unit-test:
+  stage: test
+  extends: .go-install
+  script:
+    - make test
+  only:
+    - branches
+  tags:
+    - docker
+
+coverage:
+  stage: test
+  extends: .go-install
+  coverage: /total:.*\d+\%|total:.*\d+.\d+\%/
+  script:
+    - make coverage
+  only:
+    - branches
+  tags:
+    - docker
