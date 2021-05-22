@@ -1,4 +1,5 @@
-GO=$(shell which go)
+GO=$(shell $(WHICH) go)
+WHICH=command -v
 ARTIFACT=jiracli
 
 .PHONY: help clean test coverage coverage-html fmt fmt-check vet lint staticcheck godoc
@@ -44,8 +45,8 @@ coverage-html:
 build/coverage/coverage.txt: coverage
 
 coverage-cobertura: build/coverage/coverage.txt
-	gocover-cobertura -h &> /dev/null || ($(GO) get github.com/boumenot/gocover-cobertura && go mod tidy)
-	gocover-cobertura < build/coverage/coverage.txt > build/coverage/cobertura.xml
+	$(WHICH) gocover-cobertura || ($(GO) get github.com/boumenot/gocover-cobertura && go mod tidy)
+	$(shell $(WHICH) gocover-cobertura) < build/coverage/coverage.txt > build/coverage/cobertura.xml
 
 # Lint/formatting targets
 
@@ -59,15 +60,15 @@ vet:
 	$(GO) vet ./...
 
 lint:
-	which golint || ($(GO) get golang.org/x/lint/golint  && go mod tidy)
-	$(GO) list ./... | grep -v /vendor/ | grep -v docs | xargs -L1 golint -set_exit_status
+	$(WHICH) golint || ($(GO) get golang.org/x/lint/golint  && go mod tidy)
+	$(GO) list ./... | grep -v /vendor/ | grep -v docs | xargs -L1 $(shell $(WHICH) golint) -set_exit_status
 
 staticcheck:
-	which staticcheck || ($(GO) get honnef.co/go/tools/cmd/staticcheck && go mod tidy)
+	$(WHICH) staticcheck || ($(GO) get honnef.co/go/tools/cmd/staticcheck && go mod tidy)
 	rm -rf build/staticcheck
 	mkdir -p build/staticcheck
 	ln -s "$(GO)" build/staticcheck/go
-	PATH="$(PWD)/build/staticcheck:$(PATH)" staticcheck ./...
+	PATH="$(PWD)/build/staticcheck:$(PATH)" $(shell $(WHICH) staticcheck) ./...
 	rm -rf build/staticcheck
 
 # Building targets
