@@ -76,6 +76,6 @@ jiracli:
   extends: build
   artifacts:
     paths:
-      - bin
+      - bin 
   tags:
     - docker

@@ -6,6 +6,7 @@ import (
 	"text/template"
 )
 
+// Renderer defines an interface for a renderer.
 type Renderer interface {
 	Render(w io.Writer, data interface{})
 }
@@ -14,6 +15,7 @@ type renderer struct {
 	tmpl *template.Template
 }
 
+// NewTemplateRenderer is a factory for a TemplateRenderer instance.
 func NewTemplateRenderer(pattern string) Renderer {
 	tmpl := template.New("template")
 	tmpl, err := tmpl.Option("missingkey=error").Parse(pattern)

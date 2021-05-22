@@ -10,7 +10,7 @@ import (
 func jiraSearchResultsIssuesFixture(maxResults int) []jira.Issue {
 	var m map[string]interface{}
 	var issues []jira.Issue
-	results := jiraSearchResultsJsonFixture(maxResults)
+	results := jiraSearchResultsJSONFixture(maxResults)
 
 	// Extract the issues field out of the json
 	// Then convert that issues field into []jira.Issue.
@@ -20,19 +20,19 @@ func jiraSearchResultsIssuesFixture(maxResults int) []jira.Issue {
 	return issues
 }
 
-func jiraSearchResultsJsonFixture(maxResults int) []byte {
+func jiraSearchResultsJSONFixture(maxResults int) []byte {
 	// Extract the issues field out of the json
 	// Get maxResults number of items from that slice.
 	// Marshal it back to json with maxResults issues.
 	var m map[string]interface{}
-	results := jiraAllResultsJsonFixture()
+	results := jiraAllResultsJSONFixture()
 	json.Unmarshal(results, &m)
 	m["issues"] = m["issues"].([]interface{})[:maxResults]
 	response, _ := json.Marshal(m)
 	return response
 }
 
-func jiraAllResultsJsonFixture() []byte {
+func jiraAllResultsJSONFixture() []byte {
 	return bytes.NewBufferString(`{
 		"expand": "schema,names",
 		"startAt": 0,

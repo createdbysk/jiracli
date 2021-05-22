@@ -25,7 +25,7 @@ func (h *mockHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	maxResults, _ := strconv.Atoi(r.URL.Query()["maxResults"][0])
 	expand := r.URL.Query()["expand"][0]
 	if jql == h.jql && strings.ToLower(expand) == "changelog" {
-		results := jiraSearchResultsJsonFixture(maxResults)
+		results := jiraSearchResultsJSONFixture(maxResults)
 		w.Write(results)
 	}
 }
