@@ -40,7 +40,7 @@ func TestNewJiraContextDependencies(t *testing.T) {
 	// WHEN
 	jiraContextDependencies := NewJiraContextDependencies()
 	actual := map[string]uintptr{
-		"NewJiraBasicAuthFnPtr":    testutils.GetFnPtr(jiraContextDependencies.NewHttpClient),
+		"NewJiraBasicAuthFnPtr":    testutils.GetFnPtr(jiraContextDependencies.NewHTTPClient),
 		"NewJiraConnectionFnPtr":   testutils.GetFnPtr(jiraContextDependencies.NewJiraConnection),
 		"ReadFileFnPtr":            testutils.GetFnPtr(jiraContextDependencies.ReadFile),
 		"NewJiraQueryFnPtr":        testutils.GetFnPtr(jiraContextDependencies.NewJiraQuery),
@@ -77,38 +77,33 @@ func TestNewJiraContext(t *testing.T) {
 	mockClientFactory := func(username string, password string) *http.Client {
 		if username == envVars["JIRA_USERNAME"] && password == envVars["JIRA_PASSWORD"] {
 			return client
-		} else {
-			return nil
 		}
+		return nil
 	}
 	mockConnectionFactory := func(c *http.Client, url string, m int) operator.Connection {
 		if c == client && url == envVars["JIRA_URL"] {
 			maxResults = m
 			return connection
-		} else {
-			return nil
 		}
+		return nil
 	}
 	mockReadFile := func(f string) ([]byte, error) {
 		if f == filename {
 			return bytes.NewBufferString(templateText).Bytes(), nil
-		} else {
-			return nil, errors.New("Invalid filename")
 		}
+		return nil, errors.New("Invalid filename")
 	}
 	mockQueryFactory := func(q string) operator.Query {
 		if q == jql {
 			return query
-		} else {
-			return nil
 		}
+		return nil
 	}
 	mockRendererFactory := func(text string) operator.Renderer {
 		if text == templateText {
 			return renderer
-		} else {
-			return nil
 		}
+		return nil
 	}
 
 	di := &JiraContextDependencies{

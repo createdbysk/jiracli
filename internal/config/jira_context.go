@@ -37,20 +37,24 @@ func parseJiraCommandlineArgs(args []string) (*jiraCommandlineParams, error) {
 	return &params, nil
 }
 
+// JiraContextDependencies specifies the dependencies for the jira context.
 type JiraContextDependencies struct {
-	NewHttpClient       func(username string, password string) *http.Client
+	NewHTTPClient       func(username string, password string) *http.Client
 	NewJiraConnection   func(client *http.Client, url string, maxResults int) operator.Connection
 	ReadFile            func(filename string) ([]byte, error)
 	NewJiraQuery        func(jql string) operator.Query
 	NewTemplateRenderer func(text string) operator.Renderer
 }
 
+// JiraContext specifies the context for jira actions.
 type JiraContext struct {
 	Connection operator.Connection
 	Query      operator.Query
 	Renderer   operator.Renderer
 }
 
+// NewJiraBasicAuth uses basic auth to authenticate with jira and
+// create a http client.
 func NewJiraBasicAuth(username string, password string) *http.Client {
 	tp := jira.BasicAuthTransport{
 		Username: username,
@@ -59,6 +63,7 @@ func NewJiraBasicAuth(username string, password string) *http.Client {
 	return tp.Client()
 }
 
+// NewJiraContextDependencies is the factory for JiraContextDependencies.
 func NewJiraContextDependencies() *JiraContextDependencies {
 	return &JiraContextDependencies{
 		NewJiraBasicAuth,
@@ -69,6 +74,7 @@ func NewJiraContextDependencies() *JiraContextDependencies {
 	}
 }
 
+// NewJiraContext is the factory for JiraContext.
 func NewJiraContext(di *JiraContextDependencies, args []string) (*JiraContext, error) {
 	url := os.Getenv("JIRA_URL")
 	username := os.Getenv("JIRA_USERNAME")
@@ -84,7 +90,7 @@ func NewJiraContext(di *JiraContextDependencies, args []string) (*JiraContext, e
 		return nil, err
 	}
 
-	client := di.NewHttpClient(username, password)
+	client := di.NewHTTPClient(username, password)
 
 	contents, err := di.ReadFile(commandlineArgs.TemplateFilename)
 	if err != nil {
