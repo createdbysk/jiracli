@@ -3,7 +3,7 @@ image: centos:7
 .go-install:
   before_script:
     - yum update -y
-    - yum install -y wget
+    - yum install -y wget make
     - wget -q https://golang.org/dl/go1.16.3.linux-amd64.tar.gz
     - tar -zxf go1.16.3.linux-amd64.tar.gz
     - mv go /usr/local
