@@ -62,7 +62,10 @@ coverage:
   stage: test
   coverage: /total:.*\d+\%|total:.*\d+.\d+\%/
   script:
-    - make coverage
+    - make coverage-cobertura
+  artifacts:
+    reports:
+      cobertura: build/coverage/cobertura.xml
   only:
     - branches
   tags:

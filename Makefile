@@ -41,6 +41,12 @@ coverage-html:
 	$(GO) test -race -coverprofile=build/coverage/coverage.txt -covermode=atomic ./...
 	$(GO) tool cover -html build/coverage/coverage.txt
 
+build/coverage/coverage.txt: coverage
+
+coverage-cobertura: build/coverage/coverage.txt
+	gocover-cobertura -h &> /dev/null || ($(GO) get github.com/boumenot/gocover-cobertura && go mod tidy)
+	gocover-cobertura < build/coverage/coverage.txt > build/coverage/cobertura.xml
+
 # Lint/formatting targets
 
 fmt:
