@@ -1,4 +1,4 @@
-WHICH=which
+WHICH=command -v
 GO=$(shell $(WHICH) go)
 ARTIFACT=jiracli
 
