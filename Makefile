@@ -1,4 +1,4 @@
-WHICH=command -v
+WHICH=which
 GO=$(shell $(WHICH) go)
 ARTIFACT=jiracli
 
@@ -26,6 +26,9 @@ help:
 	@echo "  make godoc                       - Builds the source code documentation and serves it on port 6060"
 
 # Test/check targets
+foo:
+	echo $(GO)
+	echo $(GOLINT)
 
 check: test fmt-check vet lint staticcheck
 
@@ -46,7 +49,7 @@ build/coverage/coverage.txt: coverage
 
 coverage-cobertura: build/coverage/coverage.txt
 	$(WHICH) gocover-cobertura || ($(GO) get github.com/boumenot/gocover-cobertura && go mod tidy)
-	$(shell $(WHICH) gocover-cobertura) < build/coverage/coverage.txt > build/coverage/cobertura.xml
+	$(GOPATH)/bin/gocover-cobertura < build/coverage/coverage.txt > build/coverage/cobertura.xml
 
 # Lint/formatting targets
 
@@ -61,14 +64,14 @@ vet:
 
 lint:
 	$(WHICH) golint || ($(GO) get golang.org/x/lint/golint  && go mod tidy)
-	$(GO) list ./... | grep -v /vendor/ | grep -v docs | xargs -L1 $(shell $(WHICH) golint) -set_exit_status
+	$(GO) list ./... | grep -v /vendor/ | grep -v docs | xargs -L1 $(GOPATH)/bin/golint -set_exit_status
 
 staticcheck:
 	$(WHICH) staticcheck || ($(GO) get honnef.co/go/tools/cmd/staticcheck && go mod tidy)
 	rm -rf build/staticcheck
 	mkdir -p build/staticcheck
 	ln -s "$(GO)" build/staticcheck/go
-	PATH="$(PWD)/build/staticcheck:$(PATH)" $(shell $(WHICH) staticcheck) ./...
+	PATH="$(PWD)/build/staticcheck:$(PATH)" $(GOPATH)/bin/staticcheck ./...
 	rm -rf build/staticcheck
 
 # Building targets
@@ -84,4 +87,4 @@ clean:
 # Go Source-Code Documentation
 godoc:
 	$(WHICH) godoc || { $(GO) get -v golang.org/x/tools/cmd/godoc && $(GO) mod tidy; }
-	$(shell $(WHICH) godoc) -http=:58080 -index
+	$(GOPATH)/bin/godoc -http=:58080 -index
