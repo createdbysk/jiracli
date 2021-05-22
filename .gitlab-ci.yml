@@ -10,8 +10,6 @@ build:
   stage: build
   script:
     - make build
-  only:
-    - branches
   tags:
     - docker
 
