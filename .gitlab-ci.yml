@@ -4,12 +4,17 @@ image: centos:7
   before_script:
     - yum update -y
     - yum install -y wget make
+    - if [[ ! -d /usr/local/go ]]; then
     - wget -q https://golang.org/dl/go1.16.3.linux-amd64.tar.gz
     - tar -zxf go1.16.3.linux-amd64.tar.gz
     - mv go /usr/local
+    - fi
     - export GOROOT=/usr/local/go
     - export GOPATH=$HOME/go
     - export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+  cache:
+    paths:
+      - /usr/local/go
 
 stages:
   - build
