@@ -65,7 +65,9 @@ coverage:
     - make coverage-cobertura
   artifacts:
     reports:
-      cobertura: build/coverage/cobertura.xml
+      coverage_report: 
+        coverage_format: cobertura
+        path: build/coverage/cobertura.xml
   only:
     - branches
   tags:
@@ -76,6 +78,6 @@ publish:
   extends: build
   artifacts:
     paths:
-      - bin/jiracli
+      - build/jiracli
   tags:
     - docker

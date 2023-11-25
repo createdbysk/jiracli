@@ -1,6 +1,9 @@
 WHICH=command -v
 GO=$(shell which go)
 ARTIFACT=$(shell basename $(PWD))
+BUILD_DIR=build
+REPO_BASE_URL=https://gitlab.com/createdbysk/jiracli
+REF=1
 
 .PHONY: help clean test coverage coverage-html fmt fmt-check vet lint staticcheck godoc
 
@@ -36,20 +39,20 @@ test:
 	$(GO) test ./...
 
 coverage:
-	mkdir -p build/coverage
-	$(GO) test -race -coverprofile=build/coverage/coverage.txt -covermode=atomic ./...
-	$(GO) tool cover -func build/coverage/coverage.txt
+	mkdir -p $(BUILD_DIR)/coverage
+	$(GO) test -race -coverprofile=$(BUILD_DIR)/coverage/coverage.txt -covermode=atomic ./...
+	$(GO) tool cover -func $(BUILD_DIR)/coverage/coverage.txt
 
 coverage-html:
-	mkdir -p build/coverage
-	$(GO) test -race -coverprofile=build/coverage/coverage.txt -covermode=atomic ./...
-	$(GO) tool cover -html build/coverage/coverage.txt
+	mkdir -p $(BUILD_DIR)/coverage
+	$(GO) test -race -coverprofile=$(BUILD_DIR)/coverage/coverage.txt -covermode=atomic ./...
+	$(GO) tool cover -html $(BUILD_DIR)/coverage/coverage.txt
 
-build/coverage/coverage.txt: coverage
+$(BUILD_DIR)/coverage/coverage.txt: coverage
 
-coverage-cobertura: build/coverage/coverage.txt
+coverage-cobertura: $(BUILD_DIR)/coverage/coverage.txt
 	$(WHICH) gocover-cobertura || ($(GO) get github.com/boumenot/gocover-cobertura && go mod tidy)
-	$(GOPATH)/bin/gocover-cobertura < build/coverage/coverage.txt > build/coverage/cobertura.xml
+	$(GOPATH)/$(BUILD_DIR)/gocover-cobertura < $(BUILD_DIR)/coverage/coverage.txt > $(BUILD_DIR)/coverage/cobertura.xml
 
 # Lint/formatting targets
 
@@ -64,28 +67,33 @@ vet:
 
 lint:
 	$(WHICH) golint || ($(GO) get golang.org/x/lint/golint  && go mod tidy)
-	$(GO) list ./... | grep -v /vendor/ | grep -v docs | xargs -L1 $(GOPATH)/bin/golint -set_exit_status
+	$(GO) list ./... | grep -v /vendor/ | grep -v docs | xargs -L1 $(GOPATH)/$(BUILD_DIR)/golint -set_exit_status
 
 staticcheck:
 	$(WHICH) staticcheck || ($(GO) get honnef.co/go/tools/cmd/staticcheck && go mod tidy)
-	rm -rf build/staticcheck
-	mkdir -p build/staticcheck
-	ln -s "$(GO)" build/staticcheck/go
-	PATH="$(PWD)/build/staticcheck:$(PATH)" $(GOPATH)/bin/staticcheck ./...
-	rm -rf build/staticcheck
+	rm -rf $(BUILD_DIR)/staticcheck
+	mkdir -p $(BUILD_DIR)/staticcheck
+	ln -s "$(GO)" $(BUILD_DIR)/staticcheck/go
+	PATH="$(PWD)/$(BUILD_DIR)/staticcheck:$(PATH)" $(GOPATH)/$(BUILD_DIR)/staticcheck ./...
+	rm -rf $(BUILD_DIR)/staticcheck
 
 # Building targets
 build: clean
-	mkdir -p bin/
+	mkdir -p $(BUILD_DIR)/
 	@echo Building with $(shell $(GO) version)
 	$(GO) get -d -v ./...
 	# Create static binaries
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GO) build -o bin/$(ARTIFACT)
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GO) build -o $(BUILD_DIR)/$(ARTIFACT)
 
 clean:
-	rm -rf bin build
+	rm -rf $(BUILD_DIR)
 
 # Go Source-Code Documentation
 godoc:
 	$(WHICH) godoc || { $(GO) get -v golang.org/x/tools/cmd/godoc && $(GO) mod tidy; }
-	$(GOPATH)/bin/godoc -http=:58080 -index
+	$(GOPATH)/$(BUILD_DIR)/godoc -http=:58080 -index
+
+download:
+	mkdir -p ${BUILD_DIR}
+	curl -L -o ${BUILD_DIR}/jiracli.zip $(REPO_BASE_URL)/-/jobs/artifacts/$(REF)/download?job=publish
+	unzip ${BUILD_DIR}/jiracli.zip
